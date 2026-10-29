@@ -1,0 +1,39 @@
+$ forge script script/Deploy.s.sol --rpc-url localhost --broadcast
+  SGTimeCredit deployed at: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+$ SGT_ADDRESS=... forge script script/SeedDemo.s.sol --rpc-url localhost --broadcast
+  Seeded: orgs 2 partners 2
+ONCHAIN EXECUTION COMPLETE & SUCCESSFUL.
+
+$ ./demo.sh
+== Onboarding (operator) ==
+4 volunteers verified (ravi licensed), 2 coordinators, aisha<->kumar family link
+
+== Ravi: 3h professional physio at Clinic X (2.0x) ==
+coordinator signed -> status AwaitingSignoff (needs beneficiary or peer too)
+peer signed -> status Ready; dispute window ends 2026-11-12 07:17 UTC
+
+== Aisha: 4h befriending at Community Centre (1.0x) ==
+Kumar (family) tries to sign Aisha's hours:
+  refused: FamilyCannotSign
+Finalise before 14 days:
+  refused: DisputeWindowOpen
+
+== +14 days: dispute window closes, anyone can finalise ==
+ravi  credits: 6.00   (3h x 2.0)
+aisha credits: 4.00   (4h x 1.0)
+
+== Earn-and-burn ==
+ravi redeems 1h at Clinic X Physio (below 20h loyalty threshold) -> 5.00 left
+aisha gifts 1.50 to kumar (family) -> kumar 1.50, aisha 2.50
+aisha donates 1.00 to Elder Care Pool -> pool 1
+aisha tries to gift to mei (not family):
+  refused: NotFamily
+
+== Supply ==
+minted 10.00  burned 1.00  circulating 9.00
+
+== Event log (Minted) ==
+    transactionHash: 0xc1e65f30e0d64877cce1454b7c8f068ca2bfb82954e31dd2c5e5f1ac099da2e8
+    transactionHash: 0x0571f092bb45380a9b3c8fd4d1d7a2261fda16f907754463ed888fee2ddeb738

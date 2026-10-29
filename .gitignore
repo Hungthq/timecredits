@@ -1,0 +1,15 @@
+# Foundry build output and installed libraries (the notebook installs forge-std)
+sgtimebank/out/
+sgtimebank/cache/
+sgtimebank/broadcast/
+sgtimebank/lib/
+sgtimebank/foundry-pp/
+# Deployment records written by Scaffold-ETH DeployHelpers (keep the folder)
+sgtimebank/deployments/*
+!sgtimebank/deployments/.gitkeep
+# Local secrets and tooling
+.env
+*.env
+.ipynb_checkpoints/
+__pycache__/
+.DS_Store
