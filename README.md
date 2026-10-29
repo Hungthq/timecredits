@@ -33,6 +33,11 @@ yarn start        # terminal 2: open http://localhost:5173
 
 If you restart Anvil, run `yarn deploy` again and refresh the page.
 
+### Troubleshooting
+
+- **`yarn chain` fails with "Only one usage of each socket address" (os error 10048):** an Anvil from an earlier lab is still running on port 8545. Find it with `Get-NetTCPConnection -LocalPort 8545 -State Listen | ForEach-Object { Get-Process -Id $_.OwningProcess }`, stop it with `Stop-Process -Name anvil -Force`, then run `yarn chain` again.
+- **`yarn start` fails with "Failed to load url /app.js" or "Cannot read properties of undefined (reading 'imports')":** Vite's pre-bundle cache is out of date, often after opening the project through a different path (a junction or symlink). Pull the latest version, then run `yarn start --force` once to rebuild the cache.
+
 ### A 3-minute demo script
 
 1. **Log in as Ravi** (licensed physiotherapist). Choose *Clinic X, reception*, tier *Professional*, then **Tap in**.
