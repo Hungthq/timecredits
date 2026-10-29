@@ -13,3 +13,7 @@ sgtimebank/deployments/*
 .ipynb_checkpoints/
 __pycache__/
 .DS_Store
+# Frontend
+node_modules/
+frontend/contract.json
+frontend/dist/

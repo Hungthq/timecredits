@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SG TimeBank DApp</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">⏱</span>
+      <div>
+        <h1>SG TimeBank</h1>
+        <p class="subtitle">TIME credits for verified volunteering, on a local Ethereum chain</p>
+      </div>
+    </div>
+    <p class="demo-note">Local demo. All people and organisations are hypothetical.</p>
+  </header>
+
+  <main>
+    <!-- Chain status -->
+    <section class="card" aria-labelledby="status-title">
+      <h2 id="status-title">Blockchain status</h2>
+      <div class="status-grid">
+        <div class="status-item"><span class="label">Network</span><span>Anvil (local)</span></div>
+        <div class="status-item"><span class="label">Chain ID</span><span id="chain-id">--</span></div>
+        <div class="status-item"><span class="label">RPC</span><span id="rpc-status" class="pill bad">Disconnected</span></div>
+        <div class="status-item"><span class="label">Latest block</span><span id="latest-block">#--</span></div>
+        <div class="status-item"><span class="label">Chain time (SGT)</span><span id="chain-time">--</span></div>
+        <div class="status-item"><span class="label">Contract</span><span id="contract-status" class="pill">Checking…</span></div>
+      </div>
+      <div class="time-machine">
+        <span class="label">Time machine (Anvil only)</span>
+        <div class="button-row">
+          <button type="button" class="btn-secondary" data-warp="3600">+1 hour</button>
+          <button type="button" class="btn-secondary" data-warp="10800">+3 hours</button>
+          <button type="button" class="btn-secondary" data-warp="86400">+1 day</button>
+          <button type="button" class="btn-secondary" data-warp="1209600">+14 days</button>
+        </div>
+        <p class="subtle">Moves the local chain's clock forward, so you can finish a session or close a 14-day dispute window in seconds.</p>
+      </div>
+      <p id="global-error" class="error" role="alert"></p>
+    </section>
+
+    <!-- Wallet -->
+    <section class="card wallet-card" aria-labelledby="wallet-title">
+      <div class="two-col">
+        <div>
+          <h2 id="wallet-title">Wallet login</h2>
+          <div class="warning">Local test wallets only. Never enter a real wallet's private key here.</div>
+          <div id="login-form">
+            <div class="form-group">
+              <label for="persona">Demo person</label>
+              <select id="persona"></select>
+              <p class="subtle">Choosing a person fills in their Anvil test wallet below.</p>
+            </div>
+            <div class="form-group">
+              <label for="wallet-address">Wallet address</label>
+              <input type="text" id="wallet-address" autocomplete="off" spellcheck="false" />
+            </div>
+            <div class="form-group">
+              <label for="private-key">Private key</label>
+              <input type="password" id="private-key" autocomplete="off" spellcheck="false" />
+            </div>
+            <button id="login-btn" type="button">Log in</button>
+            <p id="login-error" class="error" role="alert"></p>
+          </div>
+          <div id="wallet-info" class="hidden">
+            <p class="connected-name" id="connected-name"></p>
+            <p class="mono small" id="connected-address"></p>
+            <div class="role-chips" id="role-chips"></div>
+            <button id="logout-btn" type="button" class="btn-secondary">Log out</button>
+          </div>
+        </div>
+        <div>
+          <h2>My credits</h2>
+          <div class="balance-big"><span id="time-balance">--</span><small>TIME</small></div>
+          <dl class="kv">
+            <div><dt>Gas balance</dt><dd id="eth-balance">--</dd></div>
+            <div><dt>Verified hours, Community Centre North</dt><dd id="hours-org-1">--</dd></div>
+            <div><dt>Verified hours, Clinic X</dt><dd id="hours-org-2">--</dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Volunteer: tap in / out -->
+    <section class="card" aria-labelledby="tap-title">
+      <h2 id="tap-title">Volunteer: tap in and out</h2>
+      <p class="subtle">In the real system the volunteer taps a secure NFC tag at the venue. Here, choose the venue tag.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="tap-tag">Venue tag</label>
+          <select id="tap-tag"></select>
+        </div>
+        <div class="form-group">
+          <label for="tap-tier">Skill tier</label>
+          <select id="tap-tier">
+            <option value="0">General (1.0×)</option>
+            <option value="1">Skilled (1.5×, needs certificate)</option>
+            <option value="2">Professional (2.0×, needs licence)</option>
+          </select>
+        </div>
+      </div>
+      <div class="button-row">
+        <button id="tap-in-btn" type="button">Tap in</button>
+        <button id="tap-out-btn" type="button" class="btn-secondary">Tap out</button>
+      </div>
+      <p id="tap-status" class="status-msg" aria-live="polite"></p>
+      <p id="tap-error" class="error" role="alert"></p>
+    </section>
+
+    <!-- Sessions -->
+    <section class="card" aria-labelledby="sessions-title">
+      <div class="heading-row">
+        <h2 id="sessions-title">Sessions</h2>
+        <span class="subtle">Minting needs the coordinator plus a beneficiary or peer, then 14 days without dispute.</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Volunteer</th><th>Venue</th><th>Hours</th><th>Tier</th><th>Signatures</th><th>Status</th><th>Credits</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="sessions-body"><tr><td colspan="9" class="subtle">No sessions yet. Log in as a volunteer and tap in.</td></tr></tbody>
+        </table>
+      </div>
+      <p id="session-status" class="status-msg" aria-live="polite"></p>
+      <p id="session-error" class="error" role="alert"></p>
+    </section>
+
+    <!-- Spend -->
+    <section class="card" aria-labelledby="spend-title">
+      <h2 id="spend-title">Use credits</h2>
+      <div class="three-col">
+        <div class="panel">
+          <h3>Redeem at a partner</h3>
+          <div class="form-group">
+            <label for="redeem-partner">Partner</label>
+            <select id="redeem-partner"></select>
+          </div>
+          <div class="form-group">
+            <label for="redeem-hours">Service hours</label>
+            <input type="number" id="redeem-hours" min="0.25" step="0.25" value="1" />
+          </div>
+          <p id="redeem-quote" class="subtle">Log in to see your rate.</p>
+          <button id="redeem-btn" type="button">Redeem</button>
+        </div>
+        <div class="panel">
+          <h3>Gift to family</h3>
+          <div class="form-group">
+            <label for="gift-to">Family member</label>
+            <select id="gift-to"></select>
+          </div>
+          <div class="form-group">
+            <label for="gift-amount">Credits</label>
+            <input type="number" id="gift-amount" min="0.01" step="0.01" value="1" />
+          </div>
+          <p class="subtle">Only a registered family link can receive a gift.</p>
+          <button id="gift-btn" type="button">Gift</button>
+        </div>
+        <div class="panel">
+          <h3>Donate to a pool</h3>
+          <div class="form-group">
+            <label for="donate-pool">Pool</label>
+            <select id="donate-pool"></select>
+          </div>
+          <div class="form-group">
+            <label for="donate-amount">Credits</label>
+            <input type="number" id="donate-amount" min="0.01" step="0.01" value="1" />
+          </div>
+          <p class="subtle">Pool balance: <strong id="pool-balance">--</strong></p>
+          <button id="donate-btn" type="button">Donate</button>
+        </div>
+      </div>
+      <p id="spend-status" class="status-msg" aria-live="polite"></p>
+      <p id="spend-error" class="error" role="alert"></p>
+    </section>
+
+    <!-- Supply + ledger -->
+    <section class="card" aria-labelledby="ledger-title">
+      <div class="heading-row">
+        <h2 id="ledger-title">On-chain ledger</h2>
+        <div class="supply" id="supply">--</div>
+      </div>
+      <ol id="event-list" class="event-list"><li class="subtle">No events yet.</li></ol>
+    </section>
+
+    <!-- Explorer -->
+    <section class="card" aria-labelledby="explorer-title">
+      <div class="heading-row">
+        <h2 id="explorer-title">Blockchain explorer</h2>
+        <span id="explorer-live" class="live"><span aria-hidden="true"></span>Auto-updating · 2s</span>
+      </div>
+      <p class="subtle">Newest block on the right. Each block points back to its parent.</p>
+      <div id="blocks" class="blocks" role="list" tabindex="0" aria-label="Recent blocks, oldest to newest">
+        <div class="subtle">Loading blocks…</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">IS634 Web3 Fundamentals · Group 2 · Built with Foundry, viem and Vite</footer>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

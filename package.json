@@ -1,0 +1,18 @@
+{
+  "name": "sg-timebank",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "chain": "anvil",
+    "start": "vite",
+    "deploy": "forge build --root sgtimebank --skip test --skip script && node scripts/deploy.js",
+    "test": "forge test --root sgtimebank"
+  },
+  "dependencies": {
+    "viem": "^2.31.0"
+  },
+  "devDependencies": {
+    "vite": "^6.3.0"
+  }
+}
